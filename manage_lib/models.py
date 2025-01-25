@@ -18,3 +18,21 @@ class CommitData:
     message: str
     author: str
     tags: List[str]
+
+@dataclass
+class SemanticVersion:
+    major: int
+    minor: int
+    patch: int
+
+    def as_string(self) -> str:
+        return f"v{self.major}.{self.minor}.{self.patch}"
+
+    @staticmethod
+    def from_string(version: str) -> "SemanticVersion":
+        try:
+            version = version.lstrip("v")
+            major, minor, patch = map(int, version.split("."))
+            return SemanticVersion(major, minor, patch)
+        except Exception as e:
+            raise ValueError(f"Invalid version format: {version}") from e
