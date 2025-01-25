@@ -1,16 +1,8 @@
 from git import Repo, GitCommandError
 from contextlib import ExitStack
-from dataclasses import dataclass
 from typing import List, Optional
 from InquirerPy.prompts.fuzzy import FuzzyPrompt
-
-@dataclass
-class CommitData:
-    short_hash: str
-    long_hash: str
-    message: str
-    author: str
-    tags: List[str]
+from ..models import CommitData
 
 def get_git_commits() -> List[CommitData]:
     """Retrieve a list of commits with detailed data from the git repository."""
@@ -46,7 +38,8 @@ def get_git_commits() -> List[CommitData]:
     except Exception as e:
         raise Exception(f"Error while retrieving commits: {e}")
 
-def main():
+def prompt_user_select_git_commit() -> Optional[CommitData]:
+    """Prompt the user to select a commit from the git repository."""
     try:
         # Retrieve commits
         commits = get_git_commits()
@@ -75,16 +68,8 @@ def main():
         if not selected_commit:
             raise Exception("Selected commit not found.")
 
-        # Print the selected commit
-        print("Selected Commit:")
-        print(f"  Short Hash: {selected_commit.short_hash}")
-        print(f"  Long Hash: {selected_commit.long_hash}")
-        print(f"  Message: {selected_commit.message}")
-        print(f"  Author: {selected_commit.author}")
-        print(f"  Tags: {', '.join(selected_commit.tags) or 'None'}")
+        return selected_commit
 
     except Exception as e:
         print(f"Error: {e}")
-
-if __name__ == "__main__":
-    main()
+        return None
